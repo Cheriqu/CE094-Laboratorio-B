@@ -6,8 +6,9 @@ O projeto destaca-se por ter sido desenvolvido sob o paradigma da **Pesquisa Rep
 
 ## 📄 Tema e Objetivos
 
-*(Edite aqui com um breve resumo de 2 linhas sobre o problema que você resolveu no TCC)*
-> O trabalho investiga... [Insira o objetivo principal], aplicando métodos de... [Insira a metodologia principal, ex: Séries Temporais / Análise Multivariada].
+
+> Este trabalho avalia a robustez e a aplicabilidade de um modelo de Cadeias de Markov de Ordem Superior Simplificada para a previsão de séries temporais no contexto econômico brasileiro. Seguindo a metodologia de Ky e Tuyen (2018), o modelo foi testado em um conjunto diversificado de dados, incluindo ações do Ibovespa e indicadores macroeconômicos do SGS, através de um pipeline que envolveu a discretização de log-retornos e a otimização de hiperparâmetros (ordem e número de estados) via validação por janela deslizante. Os resultados demonstraram que o modelo é flexível, adaptando sua complexidade à dinâmica de cada série, e alcançou alta acurácia (baixo MAPE) para dados com padrões regulares e sazonais, como o consumo de energia e ações de setores defensivos. Contudo, sua performance foi inferior para séries mais voláteis e erráticas, como as de varejo e de empresas em setores cíclicos, evidenciando a limitação do modelo em cenários onde a dependência de padrões históricos é fraca. Conclui-se que o modelo é uma ferramenta robusta e útil para o contexto brasileiro, mas sua eficácia é condicionada à regularidade da série, e trabalhos futuros poderiam explorar extensões multivariadas para incorporar informações exógenas.
+
 
 ## 🛠️ Destaques Técnicos
 
