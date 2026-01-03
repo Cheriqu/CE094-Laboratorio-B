@@ -1,0 +1,1302 @@
+---
+lang: "pt-br"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    extra_dependencies:
+    - float
+    - graphics
+    - fancyhdr
+    - setspace
+    - scrextend
+  word_document: default
+header-includes:
+- \usepackage{cancel}
+- \usepackage{fancyhdr}
+- \pagestyle{fancy}
+- \fancyhf{}
+- \renewcommand{\headrulewidth}{0pt}
+- \fancyhead[R]{\thepage}
+- \setlength{\headheight}{15pt}
+- \usepackage{background}
+- \backgroundsetup{ scale=1, angle=0, opacity=0, contents={} }
+- \usepackage{setspace}
+- \onehalfspacing
+- \usepackage{scrextend}
+- \setmainfont{Arial}
+- \changefontsizes{12pt}
+- \setlength{\parindent}{1.25cm}
+- \usepackage{indentfirst}
+- \PassOptionsToPackage{a4paper,top=3cm,bottom=2cm,left=3cm,right=2cm}{geometry}
+- \usepackage{geometry}
+- \usepackage{fontspec}
+- \usepackage{graphicx}
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{=tex}
+
+% --- CAPA ---
+\begin{titlepage}
+\backgroundsetup{
+  scale=1,
+  angle=0,
+  opacity=0.5,
+  contents={\includegraphics[width=\paperwidth,height=\paperheight]{UFPR.png}}
+}
+\centering
+\vfill
+{Universidade Federal do Paraná\par}
+{Setor de Ciências Exatas\par}
+{Departamento de Estatística\par}
+\vspace{1cm}
+{Luiz Henrique Barretta Francisco\par}
+{Mateus Fernandes de Souza\par}
+\vspace*{\fill}
+\begin{center}
+{\large Previsão de Séries Temporais Econômicas Brasileiras Usando Cadeias de Markov de Ordem Superior Simplificadas}
+\end{center}
+\vspace*{\fill}
+\vfill
+{Curitiba, PR\par}
+{2025\par}
+\end{titlepage}
+
+% --- FOLHA DE ROSTO (CONTRACAPA) ---
+\begin{titlepage}
+\centering
+\vfill
+{Luiz Henrique Barretta Francisco\par}
+{Mateus Fernandes de Souza\par}
+\vspace*{\fill}
+\begin{center}
+{\large Previsão de Séries Temporais Econômicas Brasileiras Usando Cadeias de Markov de Ordem Superior Simplificadas}
+\end{center}
+\vspace{1cm}
+
+\hspace*{0.5\textwidth}
+\begin{minipage}[t]{0.5\textwidth} 
+\raggedright 
+\small
+\sloppy
+Trabalho de Conclusão de Curso apresentado à disciplina Laboratório B do Curso de Graduação em Estatística da Universidade Federal do Paraná, como exigência parcial para obtenção do grau de Bacharel em Estatística.\par
+\vspace{\baselineskip} 
+Orientador: Prof. Dr. Fernando Lucambio Pérez
+\end{minipage}
+
+\vspace*{\fill}
+\vfill
+{Curitiba, PR\par}
+{2025\par}
+\end{titlepage}
+
+% --- ELEMENTOS PRÉ-TEXTUAIS ---
+
+% Inicia a contagem de páginas em romanos para os elementos pré-textuais
+\pagenumbering{roman} 
+
+% --- AGRADECIMENTOS 1 (SEU "AGRADECIMENTOS") ---
+\newpage
+\section*{Agradecimentos}
+\addcontentsline{toc}{section}{Agradecimentos}
+
+Gostaria de expressar minha mais profunda gratidão a todos que, de alguma forma, contribuíram para a conclusão deste trabalho e para a minha jornada acadêmica.
+
+Agradeço imensamente ao meu orientador, Prof. Dr. Fernando Lucambio Pérez, que desde o início se mostrou extremamente solícito e disposto a nos ajudar em tudo que precisamos, fornecendo direcionamento claro e um material de consulta fundamental para o desenvolvimento desta pesquisa. Ao integrante da banca, Prof. Dr. Paulo Justiniano Ribeiro Junior, agradeço pelas aulas que despertaram uma imensa fome de aprendizado; espero construir muito conhecimento ao seu lado, agora como meu orientador na Pós-Graduação (PPGMNE/UFPR), na continuação desta caminhada. Estendo meus agradecimentos aos demais professores do Departamento de Estatística e à Universidade Federal do Paraná como um todo, por oferecer um ensino público, gratuito e de qualidade, que tem o poder de mudar vidas, inclusive a minha. Aos meus colegas de turma, obrigado pelas valiosas discussões e pela construção conjunta do conhecimento ao longo dos anos.
+
+Sou grato aos servidores e colegas do meu estágio no Tribunal de Justiça do Paraná, que me proporcionaram um ambiente de grande aprendizado e a oportunidade de aplicar a estatística para melhorar a vida em sociedade.
+
+Um agradecimento especial à minha dupla, Mateus Fernandes de Souza. Desde os primeiros períodos da faculdade, nossa parceria foi uma base sólida para toda a nossa caminhada no curso, sempre pautada pela busca da excelência e pelo apoio mútuo.
+
+Aos meus amigos, que estão sempre ao meu lado me alegrando e tornando os desafios mais leves, minha sincera gratidão.
+
+Por fim, dedico este trabalho aos meus pais, pelo apoio incondicional em tudo que me proponho a fazer. Sem vocês, nada disso seria possível.
+
+\vspace{1cm}
+\begin{flushright}
+\textit{Luiz Henrique Barretta Francisco}
+\end{flushright}
+\vspace*{\fill}
+
+% --- AGRADECIMENTOS 2 (SEU "AGRADECIMENTOS") ---
+\newpage
+\section*{Agradecimentos}
+\addcontentsline{toc}{section}{Agradecimentos} % Adiciona ao sumário
+
+Chegar até aqui foi uma construção coletiva. Este trabalho carrega muito mais do que equações e gráficos: ele carrega cada conversa de incentivo, cada apoio emocional, cada aula transformadora e cada noite em claro de dedicação.
+
+Quero expressar minha mais sincera gratidão ao meu orientador, Prof. Dr. Fernando Lucambio Pérez, pela atenção constante, pela generosidade ao compartilhar conhecimento e por ser sempre presente, com orientações claras e objetivas que foram essenciais para este trabalho.
+
+Agradeço especialmente ao Prof. Dr. Paulo Justiniano Ribeiro Junior e ao Prof. Dr. Cesar Taconeli. Ambos foram responsáveis por despertar em mim algo que vai muito além da curiosidade acadêmica: uma verdadeira paixão pela Estatística. Suas aulas foram marcos importantes na minha formação, combinando uma didática teórica impecável com aplicações práticas envolventes que me mostraram o valor real da nossa ciência.
+
+Sou também grato ao Prof. Dr. Benito, que lá no início da graduação me fez acreditar que eu era capaz. Sua atenção e carinho foram combustíveis fundamentais para que eu não desistisse nos primeiros semestres.
+
+À minha namorada, que esteve ao meu lado em absolutamente todos os momentos, deixo aqui o mais profundo agradecimento. Sua presença foi meu alicerce durante toda a graduação — mesmo à distância, sua força, carinho e palavras de incentivo me deram ânimo nos momentos mais difíceis e serenidade para seguir. Este trabalho também é seu, pois sem o seu apoio constante, emocional e afetivo, minha trajetória não teria sido a mesma. Obrigado por acreditar em mim quando eu mesmo hesitei.
+
+Aos meus pais, minha base e meu maior apoio, agradeço do fundo do coração por sempre acreditarem em mim e por me sustentarem nos momentos em que eu mesmo duvidei. Este trabalho é, acima de tudo, uma conquista nossa.
+
+Ao meu grande amigo e dupla neste trabalho, Luiz, meu muito obrigado. Nossa parceria é construída desde os primeiros períodos e sempre foi marcada por esforço mútuo, responsabilidade e busca pela excelência. É uma honra trilhar esse caminho com você.
+
+Por fim, agradeço a todos os colegas de turma, professores do Departamento de Estatística da UFPR, e à própria universidade — por me oferecer um ensino público, gratuito e de qualidade, que me transformou não só como profissional, mas como pessoa.
+
+A todos vocês, minha eterna gratidão.
+
+\vspace{1cm}
+\begin{flushright}
+\textit{Mateus Fernandes de Souza}
+\end{flushright}
+\vspace*{\fill}
+\vspace*{\fill}
+
+
+% --- RESUMO ---
+\newpage
+\section*{Resumo}
+\addcontentsline{toc}{section}{Resumo}
+Este trabalho avalia a robustez e a aplicabilidade de um modelo de Cadeias de Markov de Ordem Superior Simplificada para a previsão de séries temporais no contexto econômico brasileiro. Seguindo a metodologia de Ky e Tuyen (2018), o modelo foi testado em um conjunto diversificado de dados, incluindo ações do Ibovespa e indicadores macroeconômicos do SGS, através de um pipeline que envolveu a discretização de log-retornos e a otimização de hiperparâmetros (ordem e número de estados) via validação por janela deslizante. Os resultados demonstraram que o modelo é flexível, adaptando sua complexidade à dinâmica de cada série, e alcançou alta acurácia (baixo MAPE) para dados com padrões regulares e sazonais, como o consumo de energia e ações de setores defensivos. Contudo, sua performance foi inferior para séries mais voláteis e erráticas, como as de varejo e de empresas em setores cíclicos, evidenciando a limitação do modelo em cenários onde a dependência de padrões históricos é fraca. Conclui-se que o modelo é uma ferramenta robusta e útil para o contexto brasileiro, mas sua eficácia é condicionada à regularidade da série, e trabalhos futuros poderiam explorar extensões multivariadas para incorporar informações exógenas.
+
+
+\vspace{2cm}
+\noindent
+\textbf{Palavras-chave:} Cadeias de Markov de Ordem Superior. Previsão de Séries Temporais. Econometria Financeira.
+
+% --- ABSTRACT ---
+\newpage
+\section*{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+This work evaluates the robustness and applicability of an Improved Higher-Order Markov Chain model for time series forecasting in the Brazilian economic context. Following the methodology of Ky and Tuyen (2018), the model was tested on a diverse dataset, including Ibovespa stocks and macroeconomic indicators from the SGS, through a pipeline involving the discretization of log-returns and hyperparameter optimization (order and number of states) via rolling-window validation. The results demonstrated that the model is flexible, adapting its complexity to the dynamics of each series, and achieved high accuracy (low MAPE) for data with regular and seasonal patterns, such as energy consumption and stocks from defensive sectors. However, its performance was inferior for more volatile and erratic series, such as retail and companies in cyclical sectors, highlighting the model's limitation in scenarios where the dependency on historical patterns is weak. It is concluded that the model is a robust and useful tool for the Brazilian context, but its effectiveness is conditioned by the regularity of the series, and future work could explore multivariate extensions to incorporate exogenous information.
+
+
+\vspace{2cm}
+\noindent
+\textbf{Keywords:} Higher Order Markov Chains. Time Series Forecasting. Financial Econometrics.
+
+
+% --- LISTAS ---
+\newpage
+\listoffigures
+\addcontentsline{toc}{section}{Lista de Figuras} % Adiciona ao sumário
+
+\newpage
+\listoftables
+\addcontentsline{toc}{section}{Lista de Tabelas} % Adiciona ao sumário
+
+
+% --- SUMÁRIO ---
+\newpage
+\tableofcontents
+
+
+% --- INÍCIO DO CONTEÚDO PRINCIPAL ---
+\newpage
+\pagenumbering{arabic} % Reinicia a contagem de páginas para arábicos
+```
+
+\section{Introdução}
+\pagenumbering{arabic}
+
+A previsão de séries temporais desempenha um papel fundamental em diversas áreas, especialmente na economia, finanças e ciências sociais. Entender e antecipar o comportamento de variáveis ao longo do tempo é crucial para embasar decisões estratégicas, reduzir incertezas e otimizar resultados. Desde os trabalhos clássicos de Box e Jenkins (1970), que introduziram a metodologia ARIMA para modelagem de séries temporais, até abordagens mais recentes como redes neurais (Zhang et al., 1998) e métodos de aprendizado profundo, o campo tem evoluído de maneira significativa para lidar com padrões complexos e não lineares nos dados.
+
+Modelos tradicionais, como ARIMA e seus derivados, assumem estruturas lineares ou exigem transformações consideráveis para capturar relações não triviais. Em contrapartida, métodos baseados em processos estocásticos, como cadeias de Markov, oferecem uma estrutura natural para representar dependências dinâmicas de maneira mais direta e interpretável. Cadeias de Markov de ordem superior, em particular, estendem a memória dos processos, considerando múltiplos estados passados para determinar o estado futuro, o que pode ser especialmente útil em séries temporais com padrões de dependência de longo prazo.
+
+Este trabalho propõe a utilização de \textbf{Cadeias de Markov de Ordem Superior Simplificadas} para a previsão de séries temporais econômicas brasileiras, seguindo a metodologia de Ky e Tuyen (2018). Esta abordagem busca capturar de maneira eficiente as dinâmicas das séries sem incorrer em complexidade computacional excessiva, oferecendo, ao mesmo tempo, alta interpretabilidade e boa capacidade preditiva.
+
+A seguir, são apresentadas formalmente as definições matemáticas fundamentais de séries temporais e cadeias de Markov, além da descrição da integração desses conceitos no contexto da previsão.
+
+\subsection{Definição de Séries Temporais}
+
+Uma \textbf{série temporal} pode ser definida como uma sequência de variáveis aleatórias indexadas no tempo:
+
+$$
+\{X_t\}_{t \in T}
+$$
+
+onde:
+
+- \( X_t \) representa a variável de interesse no instante \( t \),
+
+- \( T \) é um conjunto de índices temporais, tipicamente \( T \subseteq \mathbb{Z} \),
+
+- o comportamento conjunto dos \( X_t \) reflete padrões de dependência temporal.
+
+Uma série temporal é dita \textbf{estacionária} se suas propriedades estatísticas, como média e variância, são invariantes no tempo. Formalmente, uma série \( \{X_t\} \) é estritamente estacionária se, para qualquer \( k \in \mathbb{N} \) e quaisquer tempos \( t_1, t_2, ..., t_k \), a distribuição conjunta de \( (X_{t_1}, ..., X_{t_k}) \) é a mesma que a de \( (X_{t_1+h}, ..., X_{t_k+h}) \) para todo \( h \in \mathbb{Z} \).
+
+\subsection{Definição de Cadeias de Markov}
+
+Uma \textbf{cadeia de Markov} é uma sequência de variáveis aleatórias \( \{Y_n\} \) que satisfaz a propriedade de Markov:
+
+$$
+P(Y_{n+1} = y_{n+1} \mid Y_n = y_n, Y_{n-1} = y_{n-1}, \ldots, Y_0 = y_0) = P(Y_{n+1} = y_{n+1} \mid Y_n = y_n)
+$$
+
+ou seja, o futuro depende apenas do estado presente e não do caminho percorrido para chegar até ele.
+
+Uma \textbf{cadeia de Markov de ordem \( m \)} generaliza essa definição, permitindo que o estado futuro dependa dos \( m \) estados anteriores:
+
+$$
+P(Y_{n+1} = y_{n+1} \mid Y_n = y_n, \ldots, Y_{n-m+1} = y_{n-m+1}) = P(Y_{n+1} = y_{n+1} \mid Y_n, \ldots, Y_{n-m+1})
+$$
+
+Este aumento da ordem é crucial para modelar dependências mais profundas no tempo.
+
+\subsection{Cadeias de Markov para Previsão de Séries Temporais}
+
+Neste trabalho, propomos o uso de modelos de Cadeias de Markov de ordem superior para previsão de séries temporais econômicas. Essa abordagem considera que o valor futuro de uma série não depende apenas do estado atual, mas de múltiplos estados anteriores, sendo capaz de capturar padrões temporais complexos e recorrentes, o que é particularmente útil para séries com sazonalidade ou dependência de longo prazo.
+
+\subsubsection{Cadeia de Markov de Primeira Ordem}
+
+\textbf{Definição 1.} Uma sequência de variáveis aleatórias discretas \( \{C_t : t \in \mathbb{N} \} \) é dita ser uma \textit{cadeia de Markov de primeira ordem em tempo discreto} se satisfaz a propriedade de Markov:
+
+$$
+P(C_{t+1} \mid C_t, C_{t-1}, ..., C_1) = P(C_{t+1} \mid C_t)
+\tag{1.1}
+$$
+
+Isto é, a distribuição condicional do próximo estado depende apenas do estado atual.
+
+\textbf{Definição 2.} Se a probabilidade \( P(C_{s+t} = j \mid C_s = i) = \gamma_{ij}(t) \) não depende de \( s \), então a cadeia é dita \textit{homogênea}, e a matriz \( \Gamma(t) = [\gamma_{ij}(t)] \) é chamada de matriz de transição de \( t \)-passos. Essa propriedade implica que as regras de transição do processo são invariantes no tempo, ou seja, o comportamento futuro depende apenas do estado atual e do número de passos à frente, não do instante em que a transição ocorre.
+
+
+\subsubsection{Cadeia de Markov de Ordem Superior}
+
+\textbf{Definição 3.} Uma sequência \( \{C_t\} \) é uma \textit{cadeia de Markov de ordem \( n \)} se:F
+
+$$
+P(C_{t+1} \mid C_t, C_{t-1}, ..., C_1) = P(C_{t+1} \mid C_t, C_{t-1}, ..., C_{t-n+1})
+\tag{1.2}
+$$
+
+A transição depende de \( n \) estados anteriores. Por exemplo, para uma cadeia de ordem 2:
+
+$$
+P(C_{t+1} = k \mid C_t = j, C_{t-1} = i) = \gamma(i, j, k)
+\tag{1.3}
+$$
+
+Para estimar a matriz de transição, é usual contar as ocorrências de transições nos dados observados. Suponha a sequência:
+
+
+\[
+C = \{2,3,3,2,1,1,1,1,2,3,1,3,2,3,3,2,1,2,2,3,2,3,2,3,
+\]
+\[
+3,2,2,2,2,3,1,3,2,3,3,2,2,1,2,2,3,2\}
+\tag{1.4}
+\]
+
+
+A matriz de contagens de transição de primeira ordem (estado atual → próximo estado) pode ser representada por:
+
+$$
+(f_{ij}) = \begin{bmatrix}
+3 & 3 & 2 \\
+3 & 6 & 9 \\
+2 & 9 & 4
+\end{bmatrix}
+\tag{1.5}
+$$
+
+A matriz de probabilidades de transição é:
+
+$$
+(\gamma_{ij}) = \begin{bmatrix}
+{3/11} & {3/18} & {2/15} \\
+{3/11} & {6/18} & {9/15} \\
+{2/11} & {9/18} & {4/15}
+\end{bmatrix}
+\tag{1.6}
+$$
+\subsubsection{Função de Verossimilhança e Log-Verossimilhança}
+
+A cadeia de Markov com \( m \) estados \( \{C_t\} \), dada uma realização \( c_1, c_2, ..., c_T \), possui a seguinte função de verossimilhança condicional ao primeiro estado observado:
+
+\begin{equation}
+L = \prod_{i=1}^{m} \prod_{j=1}^{m} \gamma_{ij}^{f_{ij}}
+\tag{1.7}
+\end{equation}
+
+Tomando o logaritmo da função de verossimilhança, obtemos a log-verossimilhança:
+
+\begin{equation}
+\ell = \sum_{i=1}^{m} \left( \sum_{j=1}^{m} f_{ij} \log \gamma_{ij} \right) = \sum_{i=1}^{m} \ell_i
+\tag{1.8}
+\end{equation}
+
+A maximização de \( \ell \) pode ser feita maximizando separadamente cada termo \( \ell_i \). Substituindo \( \gamma_{ij} = 1 - \sum_{k \ne i} \gamma_{ik} \) e diferenciando \( \ell_i \) em relação a uma probabilidade de transição fora da diagonal \( \gamma_{ij} \), temos:
+
+\begin{equation}
+0 = -\frac{f_{ii}}{1 - \sum_{k \ne i} \gamma_{ik}} + \frac{f_{ij}}{\gamma_{ij}}
+\tag{1.9}
+\end{equation}
+
+A partir dessa equação, obtemos que:
+
+\[
+f_{ij} \cdot \gamma_{ii} = f_{ii} \cdot \gamma_{ij}
+\]
+
+Multiplicando ambos os lados por \( \sum_{j=1}^{m} f_{ij} \), chegamos a:
+
+\begin{equation}
+\gamma_{ii} = \frac{f_{ii}}{\sum_{j=1}^{m} f_{ij}} \quad \text{e} \quad \gamma_{ij} = \frac{f_{ij}}{\sum_{j=1}^{m} f_{ij}}
+\tag{1.10}
+\end{equation}
+
+Essas expressões correspondem aos estimadores de máxima verossimilhança das probabilidades de transição.
+
+No caso em que \( f_{ij} = 0 \) para todo \( j = 1, ..., m \) (por exemplo, se o estado \( i \) for absorvente no fim da cadeia e não houver transições a partir dele), define-se \( f_{ij} = \frac{1}{m} \ \forall j \), a fim de manter as propriedades regulares da cadeia de Markov.
+
+\subsubsection*{Extensão para Cadeias de Markov de Ordem \( n \)}
+
+Para uma cadeia de Markov de ordem \( n \), definimos o vetor de estados passados como:
+
+\[
+Z_t = (C_t, C_{t-1}, ..., C_{t-n+1})
+\]
+
+A probabilidade de transição da cadeia passa então a depender do histórico de \( n \) estados anteriores:
+
+\[
+P(Z_{t+1} = (c_{t+1}, c_t, ..., c_{t-n+2}) \mid Z_t = (c_t, ..., c_{t-n+2}, c_{t-n+1})) 
+\]\[ =
+\begin{cases}
+0, & c_i \neq c_j \text{ para } i, j \in {(t − k + 2, ..., t)} \\
+P(C_{t+1} = c_{t+1} \mid C_t = c_t, ..., C_{t-n+1} = c_{t-n+1}), & \text{caso contrário}
+\end{cases}
+\tag{1.11}
+\]
+
+\subsubsection{Conversão para Primeira Ordem}
+
+Portanto, uma cadeia de Markov de ordem \( n \) pode ser convertida em uma cadeia de Markov de primeira ordem \( \{Z_t\} \), onde cada \( Z_t \) representa um vetor dos \( n \) estados anteriores. A matriz de transição associada a \( \{Z_t\} \) torna-se simples de estimar por meio da maximização da verossimilhança da sequência observada de estados \( \{Z_t\} \).
+
+\textbf{Exemplo:} Suponha que a cadeia original dada em (1.4) seja de ordem 2. A sequência de pares observados será:
+
+\[Z=
+\{(2,3), (3,3), (3,2), (2,1), (1,1), (1,1), (1,2), (2,3), (3,1), (1,3), 
+\]
+\[
+(3,2), (2,3), (3,3), (3,2), (2,1), (1,2), (2,2), (2,3), (3,2), (2,3),
+\]
+\[
+(3,2), (2,3), (3,3), (3,2), (2,2), (2,2), (2,2), (2,3), (3,1), (1,3), 
+\]
+\[
+(3,2), (2,3), (3,3), (3,2), (2,2), (2,1), (1,2), (2,2), (2,3), (3,2)\}
+\tag{1.12}
+\]
+A matriz de contagem e a matriz de transição podem ser obtidas diretamente pela frequência dos pares → próximo estado.
+
+A matriz de contagens de transição para a cadeia de Markov de segunda ordem, denotada por \( \{Z_t\} \), é apresentada na Tabela 1. Para construí-la, os pares ordenados de estados \( ij \) que compõem \( Z_t = (C_t, C_{t-1}) \) são mapeados para transições da forma \( ij \to k \), ou seja, a transição ocorre de um estado composto \( ij \) para um novo estado \( k = C_{t+1} \).
+
+\begin{table}[H]
+\centering
+\caption{Matriz de contagens de transição para cadeia de Markov de 2ª ordem}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Estado} & 11 & 12 & 13 & 21 & 22 & 23 & 31 & 32 & 33 \\
+\hline
+1 & 2 & 0 & 0 & 1 & 2 & 0 & 0 & 2 & 0 \\
+2 & 1 & 2 & 2 & 2 & 0 & 2 & 3 & 0 & 4 \\
+3 & 0 & 1 & 0 & 3 & 4 & 2 & 4 & 2 & 0 \\
+\hline
+\end{tabular}
+\end{table}
+
+A matriz de probabilidades de transição é obtida pela normalização das contagens, ou seja, pela maximização da verossimilhança. Essa matriz está apresentada na Tabela 2.
+
+\begin{table}[H]
+\centering
+\caption{Matriz de probabilidades de transição para cadeia de Markov de 2ª ordem}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Estado} & 11 & 12 & 13 & 21 & 22 & 23 & 31 & 32 & 33 \\
+\hline
+1 & 2/3 & 0 & 0 & 1/3 & 1/6 & 2/9 & 0 & 1/4 & 0 \\
+2 & 1/3 & 2/3 & 1/2 & 2/3 & 0 & 1/3 & 1 & 0 & 1/4 \\
+3 & 0 & 1/3 & 1/2 & 1 & 2/3 & 4/9 & 0 & 1/2 & 0 \\
+\hline
+\end{tabular}
+\end{table}
+
+Na matriz de transição de uma cadeia de Markov de ordem \( n \), cada coluna corresponde a uma distribuição condicional da forma \( \Gamma[\cdot, \gamma_{i_n i_{n-1} \ldots i_1}] \), isto é, a probabilidade de \( C_{t+1} \) dado os estados anteriores \( (C_t = i_k, ..., C_{t-n+1} = i_1) \).
+
+Por exemplo, na Tabela 2, \( P(C_{t+1} = j \mid 32) = \gamma[j, 32] \) é representada pela sexta coluna da matriz. Vale observar que a notação usada inverte a ordem dos estados nos índices das colunas: \( 23 \to j \) é representado por \( j = \gamma[j, 32] \), isto é, a notação reflete o vetor histórico na ordem reversa.
+
+
+\subsubsection{Cadeia de Markov de Ordem Superior Simplificada}
+
+\textbf{Definição 4.} Um modelo de Cadeia de Markov de Ordem Superior Simplificada é definido por:
+
+$$
+P(C_{t+1} = j \mid C_t, C_{t-1}, ..., C_{t-n+1}) = \sum_{i=1}^{n} \lambda_i \, q^{(i)}_{j} C_{t-i+1}
+\tag{1.13}
+$$
+
+onde:
+
+- \( \lambda_i \geq 0 \) e \( \sum_{i=1}^{n} \lambda_i = 1 \),
+
+- \( q^{(i)}_{j,k} = P(C_{t+1} = j \mid C_{t-i+1} = k) \),
+
+- \( Q_i = [q^{(i)}_{j,k}] \) é a matriz de transição do passo \( i \).
+
+
+Essa modelagem permite combinar múltiplas matrizes de transição com pesos \( \lambda_i \), obtendo uma previsão mais robusta com base em múltiplos níveis de memória.
+
+Em notação matricial, a distribuição de probabilidade do estado no tempo \( t+1 \) é dada por:
+
+$$
+\hat{C}_{t+1} = \sum_{i=1}^{n} \lambda_i Q_i C_{t-i+1}
+\tag{1.14}
+$$
+
+\subsubsection{Estimativas e Otimização}
+
+
+A estimativa da matriz de transição \( Q_i \), correspondente ao \( i \)-ésimo atraso, é obtida a partir das contagens de transição \( f^{(i)}_{j,k} \), conforme a equação:
+
+$$
+\hat{q}^{(i)}_{j,k} =
+\begin{cases}
+\frac{f^{(i)}_{j,k}}{\sum_{j=1}^{m} f^{(i)}_{j,k}}, & \text{se } \sum_{j=1}^{m} f^{(i)}_{j,k} \neq 0 \\
+0, & \text{caso contrário}
+\end{cases}
+\tag{1.15}
+$$
+
+Para determinar os pesos \( \lambda_i \), utilizados na combinação convexa das matrizes de transição \( Q_i \), propõe-se um problema de otimização do tipo \textit{min-max}, cuja função objetivo busca minimizar o maior desvio absoluto entre a distribuição estimada futura e a combinação linear das distribuições baseadas no histórico:
+
+$$
+\min_{\lambda} \max_k \left| \left[ \sum_{i=1}^{n} \lambda_i Q_i \hat{C} - \hat{C} \right]_k \right|
+\tag{1.16}
+$$
+
+sujeito a:
+
+\[
+\sum_{i=1}^{n} \lambda_i = 1, \quad \lambda_i \geq 0
+\]
+
+
+onde \( \hat{C} \) representa a estimativa da distribuição estacionária da cadeia, e \( [\cdot]_k \) denota a \( k \)-ésima entrada do vetor resultante. O valor de \( \hat{C} \) é proporcional à frequência de ocorrência do estado \( j \) na sequência observada \( \{c_t\} \), ou seja, \( f_j \). A técnica de discretização proposta na próxima seção garante que \( f_j > 0 \) para todo \( j = 1, ..., m \), assegurando a regularidade da cadeia.
+
+Dessa forma, espera-se que a seguinte aproximação seja satisfeita:
+
+$$
+\sum_{i=1}^{n} \lambda_i \hat{Q}_i \hat{C} \approx \hat{C}
+\tag{1.17}
+$$
+
+
+
+Esse problema de otimização pode ser convenientemente reescrito como um problema de programação linear da forma:
+
+\begin{equation}
+\begin{aligned}
+\min_{\lambda} \quad & \nu \\
+\text{sujeito a} \quad &
+\begin{cases}
+\begin{bmatrix}
+D & I \\
+-D & I
+\end{bmatrix}
+\begin{bmatrix}
+\lambda \\
+\mu
+\end{bmatrix}
+\geq
+\begin{bmatrix}
+\hat{C} \\
+-\hat{C}
+\end{bmatrix}, \\
+\nu \geq 0, \\
+\sum_{i=1}^{n} \lambda_i = 1, \quad \lambda_i \geq 0 \quad \text{para } i = 1, 2, ..., n
+\end{cases}
+\end{aligned}
+\tag{1.18}
+\end{equation}
+
+onde:
+
+- \( D = [\hat{Q}_1 \hat{C} \;|\; \hat{Q}_2 \hat{C} \;|\; \cdots \;|\; \hat{Q}_n \hat{C}] \in \mathbb{R}^{m \times n} \),
+
+- \( I = (1, 1, \dots, 1)^\top \in \mathbb{R}^{m \times 1} \),
+
+- \( \nu \in \mathbb{R_0^+} \) representa o valor escalar a ser minimizado.
+
+Esse problema de programação linear permite estimar os pesos \( \lambda_i \) de forma eficiente, garantindo que a distribuição prevista esteja o mais próxima possível da distribuição estacionária estimada \( \hat{C} \) em termos do desvio máximo.
+
+
+Retomando o exemplo utilizado e considerando a cadeia \( \{C_t\} \) definida na equação (1.4), a resolução do problema de otimização descrito anteriormente permite obter as estimativas das matrizes de transição \( \hat{Q}_i \), para \( i = 1, 2, 3 \), no caso de uma cadeia de Markov de terceira ordem. As matrizes estimadas são:
+
+\begin{equation}
+\resizebox{\textwidth}{!}{$
+\hat{Q}_1 =
+\left[
+\begin{array}{ccc}
+0.375 & 0.167 & 0.133 \\
+0.375 & 0.333 & 0.6 \\
+0.25 & 0.5 & 0.267
+\end{array}
+\right],
+\quad
+\hat{Q}_2 =
+\left[
+\begin{array}{ccc}
+0.25 & 0.22 & 0.142 \\
+0.625 & 0.389 & 0.429 \\
+0.125 & 0.389 & 0.429
+\end{array}
+\right],
+\quad
+\hat{Q}_3 =
+\left[
+\begin{array}{ccc}
+0.25 & 0.118 & 0.286 \\
+0.125 & 0.588 & 0.5 \\
+0.625 & 0.294 & 0.214
+\end{array}
+\right]
+$}
+\tag{1.21}
+\end{equation}
+
+
+Com base na distribuição estacionária estimada \( \hat{C} \), os pesos \( \lambda_i \) correspondentes a cada uma das matrizes \( \hat{Q}_i \), para \( i = 1, 2, 3 \), foram estimados como:
+
+\[
+\lambda = (0.705,\ 0.000,\ 0.295)
+\]
+
+A partir desses valores, as probabilidades de transição da cadeia de Markov são calculadas como uma combinação convexa das matrizes estimadas:
+
+\begin{equation}
+P(C_{t+1} \mid C_t, C_{t-1}, C_{t-2}) = 0.705 \hat{Q}_1 + 0.295 \hat{Q}_3
+\tag{1.22}
+\end{equation}
+
+Essa forma final permite realizar previsões baseadas no histórico de três estados anteriores, incorporando múltiplas matrizes de transição ponderadas pelos pesos otimizados.
+
+
+\clearpage
+\section{Materiais e Métodos}
+
+Nesta seção, detalhamos os dados utilizados, os recursos computacionais e a metodologia passo a passo empregada para a previsão das séries temporais.
+
+\subsection{Banco de dados}
+
+Neste trabalho, a metodologia de previsão foi aplicada a dois conjuntos distintos de séries temporais: preços de fechamento diário de ações brasileiras e indicadores macroeconômicos mensais.
+
+O primeiro conjunto de dados consiste em preços de ações negociadas na B3, obtidos através do portal Yahoo Finance para o período de 1º de janeiro de 2023 até o dia 20 de Junho de 2025. Para exemplificar a aplicação da metodologia neste contexto no decorrer deste trabalho, foi utilizada a série da ação da Petróleo Brasileiro S.A. (`PETR4.SA`).
+
+O segundo conjunto de dados é composto por séries temporais macroeconômicas brasileiras, obtidas diretamente do Sistema Gerenciador de Séries Temporais (SGS) do Banco Central do Brasil. As séries selecionadas para análise foram:
+
+\begin{itemize}
+\item Consumo de Energia Elétrica Residencial (código SGS 1403)
+\item Consumo Total de Energia Elétrica (código SGS 1406)
+\item Índice de Volume de Vendas no Varejo (código SGS 1455)
+\item PIB Mensal em valores correntes (código SGS 4380)
+\item Custo da Cesta Básica de Curitiba (código SGS 7483)
+\item Indicadores da Produção Industrial Geral (código SGS 21859)
+\item Taxa de Desocupação (PNADC) (código SGS 24369)
+\end{itemize}
+
+A coleta dos dados do SGS foi realizada de forma programática no ambiente R, utilizando o pacote _rbcb_, garantindo a reprodutibilidade da análise.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{series_bc.png}
+\caption{Séries temporais extraídas do SGS - Sistema Gerenciador de Séries Temporais do Banco Central do Brasil.}
+\label{fig:series_bc}
+\end{figure}
+
+A seleção dessas séries foi intencional, visando abranger um espectro variado de comportamentos e estruturas. Elas diferem em suas tendências, apresentam padrões de sazonalidade distintos - como o consumo de energia e as vendas no varejo - e possuem diferentes níveis de volatilidade. Além disso, as séries são expressas em diversas unidades de medida, incluindo valores monetários (PIB, Cesta Básica), índices de volume (Produção Industrial, Varejo), unidades físicas (GWh) e taxas percentuais (Desocupação), representando assim um desafio realista para qualquer modelo de previsão.
+
+O objetivo central deste trabalho é, portanto, investigar a robustez e a capacidade de generalização do modelo de Cadeias de Markov de Ordem Superior em múltiplos cenários. De forma análoga ao estudo de Ky e Tuyen (2018), que testaram seu método em diferentes tipos de dados para verificar sua acurácia, esta pesquisa busca aplicar uma abordagem similar, mas com um enfoque exclusivo na realidade econômica brasileira. A intenção é verificar se o modelo mantém sua eficácia preditiva quando confrontado com a dinâmica particular dos indicadores do Brasil. 
+
+Ao submeter o modelo a essa variedade de séries, espera-se obter uma compreensão clara de seu desempenho em contextos práticos, identificando tanto sua força preditiva quanto suas possíveis limitações. Essa análise aprofundada é fundamental para validar a aplicabilidade do método como uma ferramenta de previsão para agentes econômicos e pesquisadores no cenário nacional.
+
+
+\subsection{Recursos Computacionais}
+
+Toda a análise estatística e a implementação do modelo de previsão foram conduzidas na linguagem de programação R. Para a execução do trabalho, um conjunto de bibliotecas especializadas foi empregado, agrupadas de acordo com sua finalidade:
+
+\begin{itemize}
+\item Aquisição e Manipulação de Dados: A extração dos dados de ações foi realizada com o pacote `quantmod`. Para as séries macroeconômicas, utilizou-se a biblioteca `rbcb`, que fornece uma interface direta com o Sistema Gerenciador de Séries Temporais (SGS) do Banco Central do Brasil. A organização e transformação dos dados foram feitas com o auxílio dos pacotes do ecossistema Tidyverse, notadamente `dplyr`, `tidyr` e `purrr`.
+
+\item Visualização de Dados: A elaboração de todos os gráficos e figuras de resultados foi feita com o pacote `ggplot2`, e a combinação de múltiplos gráficos em uma única visualização foi facilitada pela biblioteca `patchwork`.
+\end{itemize}
+
+O pilar da modelagem neste estudo foi a biblioteca `clickstream`. Este pacote oferece um framework robusto para o ajuste de modelos de Cadeias de Markov, incluindo as de ordem superior que são o foco deste trabalho. Nele estão implementadas as principais rotinas para estimação das matrizes de transição e para a otimização dos parâmetros do modelo.
+
+É relevante notar que, em uma fase inicial do projeto, os autores desenvolveram do zero as funções para estimação e otimização, chegando a resultados analíticos consistentes com os exemplos apresentados no artigo de Ky e Tuyen (2018). Contudo, optou-se por adotar a implementação da biblioteca `clickstream` na versão final do trabalho. Essa escolha se deu por vantagens significativas em termos de eficiência, resultando em menor tempo de processamento e custo computacional, além de se beneficiar de uma base de código já testada e otimizada pela comunidade.
+
+\clearpage
+\subsection{Métodos}
+
+A metodologia empregada neste trabalho segue uma estrutura de cinco etapas, que vão desde o pré-processamento dos dados brutos até a avaliação final do modelo de previsão. Cada etapa foi desenhada para estar em conformidade com o arcabouço teórico das Cadeias de Markov de Ordem Superior, detalhado na introdução, garantindo que as transformações aplicadas aos dados sejam adequadas para a modelagem proposta.
+
+\subsubsection{Etapa 1: Pré-processamento e Transformação dos Dados}
+
+As séries temporais originais, sejam de preços de ações ou de indicadores macroeconômicos, geralmente não são estacionárias. Para contornar essa questão e preparar os dados para a modelagem, o primeiro passo consiste em calcular os log-retornos diários (ou mensais, conforme a frequência da série), dados por $r_t = \log(P_t) - \log(P_{t-1})$. Esta transformação ajuda a estabilizar a variância da série e a aproximá-la da estacionariedade, uma premissa importante para a análise. Além disso, para mitigar o efeito de observações extremas (outliers) que poderiam distorcer as probabilidades de transição estimadas, foi aplicado um filtro que remove os log-retornos cujo Z-score exceda 3 em módulo.
+
+Para ilustrar a abordagem que será adotada na análise das séries temporais neste projeto de pesquisa, foram gerados dois gráficos da ação preferencial da Petrobras. O gráfico abaixo demonstra o comportamento dos preços de fechamento ao longo do período selecionado, destacando possíveis tendências e variações sazonais.
+
+```{r, warning=FALSE, echo=FALSE, results=FALSE, message=FALSE}
+# Pacotes necessários
+library(quantmod)
+
+# --- Gráfico 2: Velas PETR4 ---
+
+# Define o nome do arquivo de saída
+png("grafico_2_velas_petr4.png", width = 800, height = 600, res = 100)
+
+# Carrega os dados
+getSymbols("PETR4.SA", src = "yahoo", from="2023-01-01", to= "2024-01-11")
+
+# Gera o gráfico
+chart_Series(PETR4.SA, type = "candlesticks", name = "PETR4.SA")
+
+# Desliga o dispositivo gráfico, salvando o arquivo
+dev.off()
+
+
+# --- Gráfico 3: Log-Retornos PETR4 ---
+
+# Define o nome do arquivo de saída
+png("grafico_3_logretornos_petr4.png", width = 800, height = 500, res = 100)
+
+# Calcula os log-retornos
+diffPETR4.SA <- diff(log(Cl(PETR4.SA)))
+
+# Gera o gráfico
+plot.xts(diffPETR4.SA, major.format="%b/%d/%Y",
+         main="Log-retornos diários do papel PETR4.SA",
+         ylab="Log-retornos", xlab="Data")
+
+# Desliga o dispositivo gráfico, salvando o arquivo
+dev.off()
+
+
+#library(quantmod)
+#getSymbols("PETR4.SA", src = "yahoo", from="2023-01-01", to= "2024-1-11")
+#chart_Series(PETR4.SA,type = "candlesticks")
+#mtext("Gráfico 1: Gráfico de velas para o papel PETR4.SA.", 
+#      side = 3, line = 1.5, cex = 0.8)
+```
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{grafico_2_velas_petr4.png}
+\caption{Gráfico de velas para o papel PETR4.SA, destacando o comportamento dos preços de fechamento ao longo do período selecionado.}
+\label{fig:velas_petr4}
+\end{figure}
+
+Transformando a série acima, temos os log-retornos diários, uma medida frequentemente utilizada em análises financeiras para avaliar estacionariedade e volatilidade, além de poder detectar mudanças abruptas no comportamento da série.
+
+```{r, warning=FALSE, echo=FALSE, results=FALSE, message=FALSE}
+# diffPETR4.SA <- diff(log(PETR4.SA))
+# plot.xts(diffPETR4.SA$PETR4.SA.Close,major.format="%b/%d/%Y",
+#          main="PETR4.SA.",ylab="Log-retornos, preço no fechamento.",xlab="Time")
+# mtext("Gráfico 2: Log-retornos diários do papel PETR4.SA.", 
+#       side = 3, line = 1.7, cex = 0.8)
+```
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{grafico_3_logretornos_petr4.png}
+\caption{Log-retornos diários do papel PETR4.SA.}
+\label{fig:logretornos_petr4}
+\end{figure}
+
+\subsubsection{Etapa 2: Discretização da Série e Definição dos Estados}
+
+O modelo de Cadeia de Markov opera sobre um espaço de estados finito e discreto. Portanto, a série contínua de log-retornos $\{r_t\}$ precisa ser convertida em uma sequência de estados discretos $\{C_t\}$. Este passo é o que materializa o espaço de estados exigido pela teoria (Definição 1, Equação 1.1) e foi realizado da seguinte forma:
+\begin{itemize}
+\item 1.  O intervalo de variação dos log-retornos filtrados, $[r_{min}, r_{max}]$, é definido como o universo.
+\item 2.  Este universo é particionado em $m$ intervalos disjuntos e de mesma amplitude, que representam os $m$ possíveis estados da cadeia. O número de estados $m$ é um hiperparâmetro a ser otimizado.
+\item 3.  Cada valor de log-retorno $r_t$ é então mapeado para um estado $j \in \{1, 2, \ldots, m\}$, de modo que se $r_t$ pertence ao j-ésimo intervalo, então $C_t = j$.
+\end{itemize}
+
+
+\subsubsection{Etapa 3: Modelagem com Cadeia de Markov de Ordem Superior Simplificada}
+
+Com a série discretizada, o passo seguinte é aplicar o modelo de Cadeia de Markov de Ordem Superior Simplificada, cuja estrutura foi formalizada na Equação (1.13). Este modelo utiliza uma combinação convexa de matrizes de transição de diferentes ordens para prever o próximo estado, conforme a Equação (1.14). A implementação prática desses passos foi realizada com o auxílio da biblioteca `clickstream` do R, que contém as rotinas para:
+
+\begin{itemize}
+\item 1.  \textbf{Estimar as Matrizes de Transição:} Para cada ordem $i$, a matriz de transição $\hat{Q}_i$ é estimada a partir da frequência de transições observadas nos dados, como formalizado na Equação (1.15).
+\item 2.  \textbf{Otimizar os Pesos $\lambda_i$:} Os pesos da combinação linear são determinados através da resolução do problema de otimização min-max (Equação 1.16), que garante que a distribuição estacionária do modelo se aproxime da distribuição empírica dos dados.
+\end{itemize}
+
+\subsubsection{Etapa 4: Validação e Seleção de Hiperparâmetros}
+
+A performance do modelo depende da escolha da ordem da cadeia ($n$) e do número de estados ($m$). Para identificar a combinação ótima, foi implementado um procedimento de validação com *janela deslizante* (*rolling-window validation*). Para um intervalo de valores de $n$ e $m$, o modelo é ajustado repetidamente em subconjuntos crescentes dos dados, e sua performance é avaliada em dados fora da amostra. A combinação de hiperparâmetros que apresentar o menor erro médio (medido pelo RMSE) ao longo de todas as janelas é selecionada como a melhor configuração para aquela série temporal.
+
+\subsubsection{Etapa 5: Geração das Previsões e Métricas de Avaliação}
+
+Com o modelo ótimo definido, a previsão é realizada para os três passos seguintes ($t+1$, $t+2$ e $t+3$). O modelo produz, a cada passo, uma distribuição de probabilidade sobre os $m$ estados possíveis. O valor esperado do log-retorno, $\hat{r}_{t+1}$, é calculado como a média ponderada dos pontos centrais de cada intervalo de estado, considerando essa distribuição de probabilidade. A previsão do preço é então obtida revertendo a transformação logarítmica: $\hat{P}_{t+1} = P_t \cdot e^{\hat{r}_{t+1}}$.
+
+A acurácia das previsões é avaliada por meio de três métricas padrão: Erro Absoluto Médio (MAE), Raiz do Erro Quadrático Médio (RMSE) e o Erro Percentual Absoluto Médio (MAPE). Essas métricas são inicialmente calculadas individualmente para cada uma das janelas de simulação e para cada passo de previsão. Em seguida, os valores são agregados tomando-se a média dos erros ao longo dos três passos e de todas as janelas utilizadas na validação do modelo. Esse processo permite obter uma estimativa robusta da performance preditiva de cada combinação de número de estados e ordem da cadeia de Markov.
+
+\clearpage
+\section{Resultados}
+
+Nesta seção, são apresentados os resultados obtidos a partir da aplicação da metodologia de previsão com Cadeias de Markov de Ordem Superior. A análise foi conduzida em dois universos de dados distintos: um conjunto de ações que compõem o Ibovespa e um conjunto de séries temporais macroeconômicas do Brasil. Os resultados serão discutidos separadamente para cada grupo, seguidos por uma análise comparativa do desempenho do modelo.
+
+
+\subsubsection{Desempenho Geral do Modelo para Ações do Ibovespa}
+
+A seguir, a Tabela 3 apresenta os resultados consolidados da aplicação do modelo de Cadeias de Markov de Ordem Superior para cada um dos ativos do Ibovespa analisados. A tabela detalha os hiperparâmetros ótimos encontrados pelo processo de validação - a ordem da cadeia ($n$), testada no intervalo de 1 a 5, e o número de estados ($m$), testado no intervalo de 3 a 9 - e as métricas de erro resultantes, permitindo uma avaliação geral da performance do modelo neste universo de dados.
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Carrega o data.frame com o resumo dos resultados para os tickers
+
+resumo_tickers <- readRDS("resumo_tickers.rds")
+
+knitr::kable(resumo_tickers,
+             caption = "Resultados consolidados da aplicação do modelo de Markov para os ativos do Ibovespa.",
+             col.names = c("Ativo", "Ordem Ótima", "Estados Ótimos", "MAE", "RMSE", "MAPE (%)"),
+             align = 'lccccc'
+)
+```
+
+
+
+A análise da Tabela 3 revela que os hiperparâmetros ótimos do modelo — ordem e número de estados — variam consideravelmente entre os diferentes ativos, reforçando a importância da etapa de validação e seleção para cada série individual. Não foi identificada uma configuração única que servisse para todos, indicando que a complexidade da memória do processo de Markov e o nível de granularidade dos estados são específicos da dinâmica de cada ação. Em termos de performance, o modelo demonstrou alta precisão para diversos ativos, atingindo um Erro Percentual Absoluto Médio (MAPE) inferior a 1% para ações como `STBP3.SA` (0.17%), `CRFB3.SA` (0.26%), `ELET3.SA` (0.57%), `EGIE3.SA` (0.57%) e `ISAE4.SA` (0.60%), em geral pertencentes a setores mais defensivos e com receitas mais previsíveis, como o de energia elétrica e serviços portuários.
+
+Em contrapartida, ativos de setores historicamente mais voláteis apresentaram erros maiores, como `VAMO3.SA` (4.15%), `COGN3.SA` (3.19%) e `CVCB3.SA` (3.16%), o que era esperado. A maior dificuldade em prever o comportamento desses ativos pode ser atribuída à sua alta sensibilidade ao ciclo econômico e a fatores externos. `CVCB3.SA`, por exemplo, pertence ao setor de turismo, diretamente impactado pela confiança do consumidor e por choques macroeconômicos. `COGN3.SA`, do setor educacional, enfrenta incertezas regulatórias e forte competição, enquanto `VAMO3.SA`, focada em locação de frotas, é altamente dependente do aquecimento da atividade industrial e logística. Essa maior dificuldade de previsão para firmas em setores cíclicos ou regulados é consistente com a teoria financeira, que postula que tais empresas possuem maior sensibilidade a fatores de risco sistêmico (Bodie, Kane, & Marcus, 2014). De modo geral, o desempenho do modelo se mostrou robusto, com a maioria dos erros contida em um intervalo entre 0.5% e 3%, um resultado promissor para previsões de curto prazo no volátil mercado de ações brasileiro.
+
+Para complementar a análise tabular, abaixo se apresenta os boxplots das distribuições das três métricas de erro (MAE, RMSE e MAPE) consolidadas para todos os ativos do Ibovespa. Essa visualização permite uma compreensão mais clara da performance geral do modelo, destacando a tendência central, a dispersão e a presença de valores atípicos nos erros de previsão para o conjunto de dados de renda variável.
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results=FALSE}
+# Pacotes necessários para gerar o gráfico
+library(ggplot2)
+library(patchwork)
+library(dplyr)
+
+# Define o nome do arquivo de saída
+png("figura_4_boxplots_erros.png", width = 900, height = 500, res = 100)
+
+# Carrega o data.frame com o resumo dos resultados
+resumo_tickers <- readRDS("resumo_tickers.rds")
+
+# Boxplot para MAE
+p1 <- ggplot(resumo_tickers, aes(y = MAE)) +
+  geom_boxplot(fill = "skyblue", color = "black", outlier.colour = "red") +
+  labs(title = "Distribuição do MAE", y = "MAE", x = "") +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+
+# Boxplot para RMSE
+p2 <- ggplot(resumo_tickers, aes(y = RMSE)) +
+  geom_boxplot(fill = "lightgreen", color = "black", outlier.colour = "red") +
+  labs(title = "Distribuição do RMSE", y = "RMSE", x = "") +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+
+# Boxplot para MAPE (%)
+p3 <- ggplot(resumo_tickers, aes(y = MAPE)) +
+  geom_boxplot(fill = "salmon", color = "black", outlier.colour = "red") +
+  labs(title = "Distribuição do MAPE", y = "MAPE (%)", x = "") +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+
+# Combina os três gráficos e imprime na tela do dispositivo PNG
+# É importante usar print() ao salvar um objeto ggplot dentro de um bloco png()
+print(p1 + p2 + p3)
+
+# Desliga o dispositivo gráfico, o que efetivamente salva o arquivo
+dev.off()
+```
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figura_4_boxplots_erros.png}
+\caption{Boxplots das distribuições das métricas de erro (MAE, RMSE e MAPE) para os ativos do Ibovespa.}
+\label{fig:boxplots_erros}
+\end{figure}
+
+
+A Figura 4 ilustra de forma agregada a distribuição dos erros de previsão para o conjunto de ativos do Ibovespa. Através do boxplot do MAPE, observa-se que o modelo apresentou um desempenho robusto, com uma mediana de erro de aproximadamente 1,2%. A maior parte dos ativos (50%, representados pela caixa) concentrou-se em um intervalo de erro percentual entre 0,9% e 2,1%, o que indica uma acurácia consistente para a maioria dos casos. Os gráficos de MAE e RMSE corroboram essa interpretação, exibindo medianas baixas e caixas compactas, concentradas na parte inferior da escala. A presença de outliers em todas as três métricas é um ponto notável, sugerindo que, embora eficaz para a maioria dos ativos, o modelo encontrou maior dificuldade em prever um subconjunto específico de ações, resultando em erros significativamente mais elevados para esses casos pontuais.
+
+
+Enquanto a tabela anterior oferece uma visão panorâmica do desempenho do modelo, uma análise mais aprofundada de um caso específico é fundamental para compreender o seu comportamento dinâmico. Para ilustrar a aplicação do modelo em seu cenário de maior acurácia, foi selecionado para este estudo de caso o ativo que apresentou o menor Erro Percentual Absoluto Médio (MAPE) dentre todos os analisados. A figura a seguir detalha as previsões geradas para este ativo, demonstrando a capacidade do modelo de se ajustar e prever em múltiplas janelas de tempo consecutivas.
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(quantmod)
+library(dplyr)
+library(tidyr)
+library(lpSolve)
+library(clickstream)
+library(ggplot2)
+library(patchwork)
+library(purrr)
+library(tibble)
+library(lubridate)
+
+prever_com_janelas_melhor_modelo <- function(input_data, nome_serie, nStates_range = 3:9, nOrder_range = 1:5, delta = 0.01, metrica = "RMSE") {
+  
+  price <- NULL 
+  
+  # A lógica agora verifica a classe do input_data
+  if (is.character(input_data) && grepl("\\.SA$", input_data)) {
+    # Se for um ticker, baixa os dados
+    getSymbols(input_data, src = "yahoo", from = "2023-01-01", to = Sys.Date(), auto.assign = TRUE)
+    price <- Cl(get(input_data))
+  } else {
+    # Senão, assume que é um vetor numérico
+    price <- as.numeric(input_data)
+  }
+  preco_inicial <- as.numeric(price[1])
+  returns <- diff(log(price))
+  returns_clean <- returns[abs(scale(returns)) < 3]
+  real <- preco_inicial * exp(cumsum(as.numeric(returns_clean)))
+  
+  resultados_modelos <- list()
+  
+  for (nStates in nStates_range) {
+    min_val <- min(returns_clean, na.rm = TRUE) - delta
+    max_val <- max(returns_clean, na.rm = TRUE) + delta
+    breaks <- seq(min_val, max_val, length.out = nStates + 1)
+    midpoints <- (head(breaks, -1) + tail(breaks, -1)) / 2
+    encoded <- cut(returns_clean, breaks = breaks, labels = FALSE, include.lowest = TRUE)
+    encoded <- na.omit(encoded)
+    
+    for (nOrder in nOrder_range) {
+      if (length(encoded) <= nOrder + 9) next
+      
+      resultado_total <- list()
+      for (inicio in (length(encoded) - 11):(length(encoded) - 3)) {
+        seq_vec <- encoded[1:inicio]
+        preco_base <- real[1:inicio]
+        real_futuro <- real[(inicio + 1):(inicio + 3)]
+        
+        if (length(seq_vec) < nOrder) next
+        
+        mc_fit <- fitMarkovChain(list(seq_vec), order = nOrder)
+        transicoes <- mc_fit@transitions
+        lambdas <- mc_fit@lambda
+        
+        ultimos_estados <- rev(tail(seq_vec, nOrder))
+        previsoes <- numeric(3)
+        erro_min <- numeric(3)
+        erro_max <- numeric(3)
+        ultimo_preco <- tail(preco_base, 1)
+        
+        for (passo in 1:3) {
+          x_hat <- rep(0, nStates)
+          for (i in 1:min(nOrder, length(ultimos_estados))) {
+            estado_passado <- ultimos_estados[i]
+            probs <- transicoes[[i]][, estado_passado]
+            x_hat <- x_hat + lambdas[i] * probs
+          }
+          retorno_esperado <- sum(x_hat * midpoints)
+          novo_preco <- ultimo_preco * exp(retorno_esperado)
+          previsoes[passo] <- novo_preco
+          erro_min[passo] <- ultimo_preco * exp(min(midpoints))
+          erro_max[passo] <- ultimo_preco * exp(max(midpoints))
+          ultimo_preco <- novo_preco
+          ultimos_estados <- c(estado_passado, which.max(x_hat))
+        }
+        
+        real_valid <- na.omit(real_futuro)
+        pred_valid <- previsoes[1:length(real_valid)]
+        mae <- mean(abs(real_valid - pred_valid), na.rm = TRUE)
+        rmse <- sqrt(mean((real_valid - pred_valid)^2, na.rm = TRUE))
+        mape <- mean(abs((real_valid - pred_valid) / real_valid), na.rm = TRUE) * 100
+        
+        resultado_total[[paste0("inicio_", inicio)]] <- list(
+          previsoes = previsoes,
+          reais = real_futuro,
+          erro_min = erro_min,
+          erro_max = erro_max,
+          mae = mae,
+          rmse = rmse,
+          mape = mape,
+          preco_base = preco_base
+        )
+      }
+      
+      metricas_finais <- sapply(resultado_total, function(res) {
+        if (is.null(res)) return(Inf)
+        switch(metrica,
+               "RMSE" = res$rmse,
+               "MAPE" = res$mape,
+               "MAE" = res$mae,
+               Inf)
+      })
+      
+      media_erro <- mean(unlist(metricas_finais), na.rm = TRUE)
+      
+      resultados_modelos[[paste0("S", nStates, "_O", nOrder)]] <- list(
+        resultado_total = resultado_total,
+        media_erro = media_erro,
+        nStates = nStates,
+        nOrder = nOrder
+      )
+    }
+  }
+  
+  melhores <- resultados_modelos[[which.min(sapply(resultados_modelos, function(x) x$media_erro))]]
+cat("Melhor modelo para", nome_serie, ":", melhores$nStates, "estados e ordem", melhores$nOrder, "\n")
+  
+  
+  plots <- list()
+  for (nome in names(melhores$resultado_total)) {
+    res <- melhores$resultado_total[[nome]]
+    preco_base <- res$preco_base
+    real_futuro <- res$reais
+    previsoes <- res$previsoes
+    erro_min <- if (length(res$erro_min) < 3) rep(tail(res$erro_min, 1), 3) else res$erro_min
+    erro_max <- if (length(res$erro_max) < 3) rep(tail(res$erro_max, 1), 3) else res$erro_max
+    
+    n_treino <- length(preco_base)
+    df_plot <- data.frame(
+      tempo = 1:(n_treino + 3),
+      real = c(preco_base, real_futuro),
+      previsao = c(rep(NA, n_treino), previsoes),
+      erro_min = c(rep(NA, n_treino - 1), preco_base[n_treino], erro_min),
+      erro_max = c(rep(NA, n_treino - 1), preco_base[n_treino], erro_max),
+      tipo = c(rep("treino", n_treino), rep("teste", 3))
+    )
+    
+    p <- ggplot(df_plot, aes(x = tempo)) +
+      geom_line(aes(y = real, group = 1, color = tipo), linewidth = 0.6) +
+      scale_color_manual(values = c("treino" = "black", "teste" = "red")) +
+      geom_point(aes(y = real), color = "black", size = 1) +
+      geom_line(aes(y = previsao), color = "blue", linewidth = 1) +
+      geom_point(aes(y = previsao), color = "blue", shape = 16, size = 2) +
+      geom_ribbon(aes(ymin = erro_min, ymax = erro_max), fill = "blue", alpha = 0.2) +
+      geom_point(data = df_plot[df_plot$tipo == "teste", ], aes(y = real), color = "red", size = 2.5) +
+      labs(title = paste0("Previsão para ", nome_serie, "\nMelhor modelo: estados=", melhores$nStates, ", ordem=", melhores$nOrder,
+                          " | ", nome),
+           subtitle = paste("MAE =", round(res$mae, 3), "/ RMSE =", round(res$rmse, 3), "/ MAPE =", round(res$mape, 2), "%"),
+           y = "Valor", x = "Tempo") +
+      coord_cartesian(xlim = c(max(df_plot$tempo) - 29, max(df_plot$tempo))) +
+      scale_x_continuous(breaks = scales::pretty_breaks(n = 10)) +
+      theme_minimal(base_size = 10) +
+      guides(color = "none") +
+      coord_cartesian(xlim = c(max(df_plot$tempo) - 29, max(df_plot$tempo)), 
+                      ylim = {
+                        ultimos <- tail(df_plot$real, 39)
+                        rng <- range(ultimos, na.rm = TRUE)
+                        c(rng[1] - 0.5, rng[2] + 0.5)
+                      })
+    
+    plots[[nome]] <- p
+  }
+  
+  melhores$plots <- plots
+  return(melhores)
+}
+
+
+
+
+message("Carregando resumo de resultados...")
+resumo_tickers <- readRDS("resumo_tickers.rds")
+melhor_linha <- resumo_tickers[which.min(resumo_tickers$`MAPE`), ]
+nome_melhor_ativo <- melhor_linha$Ativo
+
+resultado_melhor_ativo <- prever_com_janelas_melhor_modelo(input_data = melhor_linha$Ativo, nome_serie = melhor_linha$Ativo)
+
+
+# 4. SALVAR O GRÁFICO COMO UM ARQUIVO PNG
+message("Salvando a figura do estudo de caso...")
+# Combina a lista de gráficos em um único objeto patchwork
+grafico_combinado <- patchwork::wrap_plots(resultado_melhor_ativo$plots, ncol = 3)
+
+# Salva o gráfico combinado em um arquivo
+ggsave(
+  "figura_estudo_caso_melhor_ativo.png",
+  plot = grafico_combinado,
+  width = 12,
+  height = 8,
+  dpi = 150,
+  bg = "white"
+)
+
+message("Figura 'figura_estudo_caso_melhor_ativo.png' salva com sucesso!")
+
+```
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figura_estudo_caso_melhor_ativo.png}
+\caption{Previsões de 3 passos à frente para o ativo \textbf{STBP3.SA}, que apresentou o menor erro de previsão (MAPE). Cada painel mostra o desempenho do modelo ótimo em uma janela de validação, exibindo os dados de treino (preto), os valores reais (vermelho) e as previsões (azul).}
+\label{fig:estudo_caso_melhor}
+\end{figure}
+
+A figura 5 apresenta o desempenho do melhor modelo de previsão encontrado para o ativo `STBP3.S`A, que utiliza uma Cadeia de Markov com 3 estados e ordem 3.  Cada um dos nove painéis representa uma previsão de curto prazo feita em um momento diferente (janela deslizante), testando a estabilidade do modelo.  Visualmente, as previsões (em azul) acompanham de perto os valores reais (em vermelho), e as métricas de erro, como o MAPE, são consistentemente muito baixas em todos os cenários, variando entre 0.09% e 0.35%.  Isso demonstra que, para este ativo específico, o modelo não só alcançou uma acurácia extremamente alta, como também se mostrou robusto e consistente ao longo de diferentes períodos de teste. 
+
+Após analisar o cenário de maior sucesso do modelo, é igualmente instrutivo investigar suas limitações. Para isso, a análise a seguir foca no ativo que apresentou o maior Erro Percentual Absoluto Médio (MAPE). O objetivo é identificar visualmente os fatores que dificultaram a previsão e entender o comportamento do modelo sob condições de maior volatilidade ou incerteza.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+pior_linha <- resumo_tickers[which.max(resumo_tickers$MAPE), ]
+nome_pior_ativo <- pior_linha$Ativo
+
+# 3. RE-EXECUTAR A ANÁLISE APENAS PARA O PIOR ATIVO
+resultado_pior_ativo <- prever_com_janelas_melhor_modelo(input_data = pior_linha$Ativo, nome_serie = pior_linha$Ativo)
+# Combina a lista de gráficos em um único objeto patchwork
+grafico_combinado_pior <- patchwork::wrap_plots(resultado_pior_ativo$plots, ncol = 3)
+
+# Salva o gráfico combinado em um novo arquivo
+ggsave(
+  "figura_estudo_caso_pior_ativo.png", # Novo nome de arquivo
+  plot = grafico_combinado_pior,
+  width = 12,
+  height = 8,
+  dpi = 150,
+  bg = "white"
+)
+
+```
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figura_estudo_caso_pior_ativo.png}
+\caption{Previsões de 3 passos à frente para o ativo \textbf{VAMO3.SA}, que apresentou o maior erro de previsão (MAPE). Os painéis ilustram as dificuldades do modelo em cenários de maior volatilidade.}
+\label{fig:estudo_caso_pior}
+\end{figure}
+
+
+Em nítido contraste com o estudo de caso de maior acurácia, a Figura 6 para o ativo `VAMO3.SA` ilustra o comportamento do modelo sob as condições mais desafiadoras encontradas na análise. Fica evidente a dificuldade do modelo em prever esta série: em diversas janelas de validação, a previsão (em azul) não apenas erra a magnitude, mas também a direção do movimento real dos preços (em vermelho). Além disso, a faixa de erro (área sombreada) é visivelmente mais ampla e, ainda assim, frequentemente não consegue conter o valor real, indicando alta incerteza. Essa instabilidade é quantificada pela grande variação do MAPE entre os painéis, que salta de valores baixos como 0.83% para picos de quase 7%. A análise visual sugere que a alta volatilidade intrínseca do ativo VAMO3.SA quebra os padrões de transição que o modelo tenta aprender, resultando em previsões menos confiáveis e demonstrando os limites da sua aplicabilidade para séries de comportamento mais errático.
+
+
+\subsubsection{Desempenho Geral do Modelo para Séries Macroeconômicas}
+
+Após a análise dos ativos de renda variável, o foco se volta para o desempenho do modelo nas séries temporais macroeconômicas do SGS. A Tabela 4 consolida os resultados, apresentando os parâmetros ótimos e as métricas de erro para cada indicador econômico.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results=TRUE}
+# Carrega o data.frame com o resumo dos resultados para as séries do SGS
+resumo_sgs <- readRDS("resumo_sgs.rds")
+
+# Exibe a tabela formatada
+knitr::kable(
+  resumo_sgs,
+  caption = "Resultados consolidados para as séries temporais macroeconômicas do SGS.",
+  col.names = c("Série", "Ordem Ótima", "Estados Ótimos", "MAE", "RMSE", "MAPE (%)"),
+  align = 'lccccc'
+)
+```
+
+A Tabela 4 resume os resultados da aplicação do modelo às séries macroeconômicas, e, de maneira similar à análise das ações, revela que os hiperparâmetros ótimos variaram significativamente entre os indicadores. Séries como 'Consumo Total de Energia' e 'PIB Mensal' se ajustaram melhor a modelos mais simples (ordem 1, 3 estados) , ao passo que a 'Taxa de Desocupação' exigiu um modelo de complexidade máxima testada (ordem 9), sugerindo uma profunda dependência temporal em seus dados. Em termos de acurácia, o modelo obteve seu melhor desempenho na previsão do 'Consumo Total de Energia Elétrica' (MAPE de 1.88%), uma série conhecida por seus fortes padrões sazonais. Em contrapartida, os maiores erros foram observados para 'Varejo Total' (6.57%) e 'Produção Industrial' (6.27%), indicadores mais diretamente influenciados pela volatilidade dos ciclos de negócios e pela confiança do consumidor. No geral, os resultados indicam que a performance do modelo está mais atrelada às características individuais de cada série, como a regularidade de seus padrões, do que a uma distinção geral entre dados financeiros e macroeconômicos.
+
+Para avaliar o desempenho agregado do modelo nas séries macroeconômicas, a análise foca exclusivamente no Erro Percentual Absoluto Médio (MAPE), apresentado na Figura 7.
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results=FALSE}
+library(ggplot2)
+library(dplyr)
+
+# Define o nome do arquivo de saída para o novo gráfico
+png("figura_sgs_boxplot_mape.png", width = 600, height = 500, res = 100)
+
+# Carrega o data.frame com o resumo dos resultados
+# Pré-requisito: O arquivo "resumo_sgs.rds" deve existir
+resumo_sgs <- readRDS("resumo_sgs.rds")
+
+# Cria o boxplot apenas para o MAPE (%)
+mape_boxplot <- ggplot(resumo_sgs, aes(y = MAPE)) +
+  geom_boxplot(fill = "salmon", color = "black") + # Outliers serão mostrados por padrão se existirem
+  labs(
+    title = "Distribuição do Erro Percentual (MAPE)",
+    subtitle = "Séries Macroeconômicas do SGS",
+    y = "MAPE (%)",
+    x = "" # Remove o título do eixo x
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+
+# Imprime o gráfico no dispositivo PNG
+print(mape_boxplot)
+
+# Fecha o dispositivo e salva o arquivo
+dev.off()
+
+```
+
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{figura_sgs_boxplot_mape.png}
+\caption{Boxplot da distribuição da métrica de erro MAPE para as séries macroeconômicas do SGS.}
+\label{fig:boxplot_mape_sgs}
+\end{figure}
+
+A análise agregada do desempenho para as séries macroeconômicas, apresentada na Figura 7, concentra-se exclusivamente na métrica do MAPE. Essa escolha metodológica é fundamental, uma vez que as séries analisadas possuem escalas e unidades de medida vastamente distintas (milhões de R\$, GWh, índices, taxas percentuais), o que torna a comparação direta dos erros absolutos (MAE e RMSE) inadequada. O MAPE, por ser uma métrica relativa, normaliza o erro e permite uma comparação justa da acurácia entre todos os indicadores. O boxplot revela que a mediana do erro de previsão para este conjunto de dados se situa em torno de 3,5%. Metade das séries apresentou um erro concentrado no intervalo de aproximadamente 3% a 5,5%, indicando uma performance razoável, porém com uma dispersão e um nível de erro mediano superiores aos observados para o conjunto de ações. Notavelmente, não foram identificados outliers, sugerindo que o desempenho do modelo foi mais homogêneo entre as séries macroeconômicas, sem nenhum caso de falha tão discrepante quanto nos ativos mais voláteis da bolsa.
+
+
+
+De forma análoga à análise das ações, são investigados os casos de melhor e pior desempenho para entender o comportamento do modelo em diferentes contextos macroeconômicos. A Figura 8 exibe os resultados para a série com a menor taxa de erro, demonstrando o modelo em sua máxima eficácia para dados econômicos.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#--- Script para Gerar a Figura do Melhor Caso (SGS) - Versão Final ---
+
+# 1. CARREGAR PACOTES E A FUNÇÃO PRINCIPAL
+library(quantmod)
+library(dplyr)
+library(tidyr)
+library(lpSolve)
+library(clickstream)
+library(ggplot2)
+library(patchwork)
+library(rbcb)
+library(purrr)
+
+# PRÉ-REQUISITO: Cole sua função prever_com_janelas_melhor_modelo() completa aqui
+# prever_com_janelas_melhor_modelo <- function(input_data, nome_serie, ...) {
+#   ... (código completo da sua função) ...
+# }
+
+#---------------------------------------------------------------------
+
+# 2. IDENTIFICAR A MELHOR SÉRIE A PARTIR DO RESUMO
+message("Carregando resumo de resultados do SGS...")
+# Pré-requisito: O arquivo "resumo_sgs.rds" deve existir.
+resumo_sgs <- readRDS("resumo_sgs.rds")
+
+# Verifica se o resumo não está vazio
+if (nrow(resumo_sgs) == 0) {
+  stop("O arquivo 'resumo_sgs.rds' está vazio. Verifique a execução do script principal.")
+}
+
+# Identifica o nome da série com o menor MAPE
+nome_melhor_serie <- resumo_sgs$Serie[which.min(resumo_sgs$MAPE)]
+message(paste("A série SGS com menor erro (MAPE) é:", nome_melhor_serie))
+
+
+# 3. OBTER OS DADOS COMPLETOS DO SGS
+message("Baixando e preparando os dados do SGS para a análise...")
+codigos_sgs <- c(
+  Consumo_Ind_GWh       = 1403,
+  Consumo_Total_GWh     = 1406,
+  Varejo_Total          = 1455,
+  PIB_Mensal            = 4380,
+  Cesta_Basica_Curitiba = 7483,
+  Producao_Industrial   = 21859,
+  Taxa_Desocupacao_PNAD = 24369
+)
+series_bcb_list <- rbcb::get_series(codigos_sgs, start_date = "2012-03-01")
+series_wide <- series_bcb_list %>%
+  reduce(full_join, by = "date") %>%
+  arrange(date) %>%
+  na.omit()
+message("Dataframe 'series_wide' criado com sucesso.")
+
+
+# 4. EXECUTAR A ANÁLISE APENAS PARA A MELHOR SÉRIE
+message(paste("Executando a análise detalhada para", nome_melhor_serie, "..."))
+
+# A chamada correta usa a variável 'nome_melhor_serie' para selecionar a coluna
+# e também como o nome para os gráficos.
+resultado_melhor_sgs <- prever_com_janelas_melhor_modelo(
+  input_data = series_wide[[nome_melhor_serie]], 
+  nome_serie = nome_melhor_serie
+)
+
+
+# 5. SALVAR O GRÁFICO COMO UM ARQUIVO PNG
+message("Salvando a figura do estudo de caso...")
+grafico_combinado_melhor_sgs <- patchwork::wrap_plots(resultado_melhor_sgs$plots, ncol = 3)
+ggsave(
+    "figura_sgs_melhor_caso.png",
+    plot = grafico_combinado_melhor_sgs,
+    width = 12,
+    height = 8,
+    dpi = 150,
+    bg = "white"
+)
+message("Figura 'figura_sgs_melhor_caso.png' salva com sucesso!")
+```
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figura_sgs_melhor_caso.png}
+\caption{Previsões de 3 passos à frente para a série \textbf{Consumo Total GWh}, que apresentou o menor erro de previsão (MAPE).}
+\label{fig:estudo_caso_melhor_sgs}
+\end{figure}
+
+A análise do melhor caso para as séries macroeconômicas, correspondente ao Consumo Total de Energia Elétrica (GWh), revela uma alta eficácia do modelo. A Figura 8 demonstra que o modelo ótimo (ordem 1, 3 estados) foi capaz de capturar com sucesso a forte tendência ascendente e os padrões cíclicos da série. Em praticamente todas as janelas de validação, as previsões (em azul) não só acertaram a direção do movimento futuro, como também se mantiveram muito próximas dos valores reais (em vermelho), resultando em um MAPE consistentemente baixo, em torno de 1-2%. As previsões para esta série são visivelmente mais estáveis e precisas do que as observadas para os ativos do mercado de ações. Este resultado está em total acordo com as observações de Ky e Tuyen (2018) , que destacam a adequação do modelo para séries com forte componente sazonal, como o consumo de eletricidade, onde os padrões históricos se repetem de forma mais previsível
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+pior_linha <- resumo_sgs[which.max(resumo_sgs$MAPE), ]
+nome_pior_serie <- pior_linha$Serie
+message(paste("A série SGS com MAIOR erro (MAPE) é:", nome_pior_serie))
+resultado_pior_sgs <- prever_com_janelas_melhor_modelo(
+  input_data = series_wide[[nome_pior_serie]],
+  nome_serie = nome_pior_serie
+)
+
+
+# 5. SALVAR O GRÁFICO COMO UM ARQUIVO PNG
+message("Salvando a figura do estudo de caso para a pior série...")
+grafico_combinado_pior_sgs <- patchwork::wrap_plots(resultado_pior_sgs$plots, ncol = 3)
+ggsave(
+    "figura_sgs_pior_caso.png",
+    plot = grafico_combinado_pior_sgs,
+    width = 12,
+    height = 8,
+    dpi = 150,
+    bg = "white"
+)
+message("Figura 'figura_sgs_pior_caso.png' salva com sucesso!")
+
+```
+
+\vspace{1cm}
+Em contrapartida, a Figura 9 apresenta o estudo de caso para a série com o maior erro de previsão. Esta análise é crucial para identificar as características de séries macroeconômicas que representam um maior desafio para o modelo de Markov.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figura_sgs_pior_caso.png}
+\caption{Previsões de 3 passos à frente para a série \textbf{Varejo Total}, que apresentou o maior erro de previsão (MAPE).}
+\label{fig:estudo_caso_pior_sgs}
+\end{figure}
+
+Em contrapartida, a análise do pior caso, a série de Vendas no Varejo Total, expõe os limites do modelo. A Figura 9 mostra um comportamento muito mais errático e volátil, sem a tendência clara ou a sazonalidade regular da série de consumo de energia. Consequentemente, o modelo de Markov teve grande dificuldade em aprender um padrão de transição estável. As previsões (em azul) frequentemente erraram a direção e a magnitude dos valores futuros, e a faixa de erro, embora ampla, não conseguiu conter os valores reais em múltiplos painéis. A instabilidade é confirmada pela grande variabilidade do MAPE, que chegou a atingir picos de 9.91% e 14.73% em algumas janelas. Assim como Ky e Tuyen (2018)  reconheceram a dificuldade em prever séries complexas como as do mercado de ações, este resultado demonstra que a eficácia do modelo de Markov diminui significativamente quando aplicado a séries que não possuem padrões históricos fortes e repetitivos, violando a premissa fundamental da propriedade de Markov.
+
+\clearpage
+\section{Conclusão e Discussão}
+
+Este trabalho se propôs a avaliar a aplicabilidade e a robustez de um modelo de Cadeias de Markov de Ordem Superior Simplificada, conforme a metodologia de Ky e Tuyen (2018), para a previsão de séries temporais no contexto brasileiro. A metodologia foi testada em um conjunto diversificado de dados, abrangendo tanto ativos de renda variável do Ibovespa, caracterizados por alta volatilidade, quanto séries macroeconômicas mensais do SGS, que possuem estruturas de tendência e sazonalidade distintas. O objetivo central era verificar a capacidade de generalização do modelo em diferentes cenários, validando sua eficácia como ferramenta de previsão para a realidade econômica nacional.
+
+A análise dos resultados demonstrou que o modelo é flexível e adaptável. O processo de validação com janela deslizante e a busca por hiperparâmetros ótimos revelaram que não existe uma configuração única de "ordem" e "número de estados" que seja universalmente ideal; pelo contrário, a complexidade ótima do modelo é intrinsecamente dependente das características de cada série. O modelo alcançou um desempenho notável, com erros (MAPE) consistentemente baixos, para séries que exibem padrões mais regulares e previsíveis. Isso foi observado tanto em ações de setores mais estáveis, como `STBP3.SA`, quanto em séries macroeconômicas com forte componente sazonal, como o `Consumo_Total_GWh`. Em contrapartida, e em linha com a teoria financeira, o modelo apresentou maiores dificuldades e erros mais elevados para ativos e indicadores de natureza mais errática e volátil, como `VAMO3.SA` e `Varejo_Total`, onde a premissa de que o futuro próximo depende de um padrão estável do passado se torna mais frágil.
+
+Dentre os pontos fortes da metodologia, destacam-se a sua natureza não-paramétrica, que não exige pressupostos sobre a distribuição dos dados, e a sua interpretabilidade, baseada na lógica de transição entre estados. Contudo, a principal limitação identificada é o seu caráter estritamente univariado. O modelo opera olhando apenas para o histórico da própria série, sendo incapaz de incorporar informações exógenas que sabidamente influenciam as variáveis, como taxas de juros, índices de confiança ou o desempenho de outras variáveis econômicas correlacionadas. Adicionalmente, sua premissa de probabilidades de transição constantes o torna vulnerável a quebras estruturais ou mudanças de regime não vistas nos dados de treino.
+
+A partir dessas observações, diversas continuações e aprimoramentos para este trabalho podem ser propostos. A extensão mais natural seria a evolução para um **modelo multivariado**, onde a transição de estado de uma série poderia depender não apenas de seu próprio passado, mas também do estado de outras variáveis. A implementação de uma Cadeia de Markov Multivariada ou de modelos de Vetores Autorregressivos com Mudança de Regime de Markov (`MS-VAR`) poderia capturar as interdependências entre os indicadores econômicos e financeiros, potencialmente aprimorando a acurácia das previsões. Outras possíveis continuações incluem a exploração de **métodos de discretização alternativos**, como a divisão por quantis em vez de intervalos de mesma amplitude, e o desenvolvimento de **modelos híbridos**, que poderiam combinar a Cadeia de Markov para capturar regimes de mercado com modelos como o `GARCH` para modelar a volatilidade dentro de cada regime.
+
+Em suma, este estudo validou o modelo de Cadeia de Markov de Ordem Superior como uma ferramenta útil e robusta para a previsão de séries temporais brasileiras, especialmente aquelas com padrões bem definidos. Ao mesmo tempo, foram identificados seus limites em cenários de alta volatilidade e delineados caminhos claros para trabalhos futuros, que apontam para a incorporação de múltiplas variáveis como o próximo passo para a construção de modelos de previsão ainda mais completos e precisos.
+
+
+\clearpage
+\section{Referências}
+\begin{itemize}
+\item Banco Central do Brasil. (s.d.). \textit{SGS - Sistema Gerenciador de Séries Temporais}. Disponível em: \url{https://www3.bcb.gov.br/sgspub/consultarvalores}. Acesso em: 20 jun. 2025.
+
+\item Bodie, Z., Kane, A., \& Marcus, A. J. (2014). \textit{Investments} (10th ed.). McGraw-Hill Education.
+
+\item Box, G. E. P., \& Jenkins, G. M. (1970). \textit{Time Series Analysis: Forecasting and Control}.
+
+\item Bulla, J., \& Bulla, I. (2006). Stylized facts of financial time series and hidden semi-Markov models. \textit{Computational Statistics \& Data Analysis}.
+
+\item Freitas, W. (2024). \textit{rbcb: R Interface to Brazilian Central Bank Web Services} (Pacote R versão 0.1.14). Disponível em: \url{https://github.com/wilsonfreitas/rbcb}.
+
+\item Hamilton, J. D. (1989). A new approach to the economic analysis of nonstationary time series and the business cycle. \textit{Econometrica}.
+
+\item Ky, D. X., \& Tuyen, L. T. (2018). \textit{A Higher Order Markov Model for Time Series Forecasting}.
+
+\item Pérez, F. L. (2021). \textit{Cadeias de Markov}. Material de curso online. Universidade Federal do Paraná. Disponível em: \url{http://leg.ufpr.br/~lucambio/CM/CM.html}. Acesso em: 20 jun. 2025.
+
+\item R CORE TEAM. (2015). \textit{R: A Language and Environment for Statistical Computing}. Viena, Austria: R Foundation for Statistical Computing. Disponível em: \url{https://www.R-project.org/}.
+
+\item Zhang, G., Patuwo, B. E., \& Hu, M. Y. (1998). Forecasting with artificial neural networks: The state of the art. \textit{International Journal of Forecasting}.
+\end{itemize}
